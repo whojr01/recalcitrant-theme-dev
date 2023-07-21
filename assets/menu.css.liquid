@@ -1,0 +1,173 @@
+.menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 35px;
+    position: relative;
+    z-index: 10;
+    padding: 10px 20px;
+    background: {{ settings.bg }};
+    border: 1px solid {{ settings.link_color }};
+    flex-basis: 50%
+}
+
+.menu .menuToggle {
+    display: none;
+}
+
+.menu .primary-navigation {
+    background: transparent;
+    position: static;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    gap: 42px;
+}
+
+.menu .primary-navigation li {
+    padding: 0;
+}
+
+.menu .primary-navigation li a {
+    text-decoration: none;
+    color: {{ settings.link_color }};
+}
+
+.menu .logo {
+    color: {{ settings.link_color }};
+}
+
+@media only screen and (max-width: 749px ) {
+
+    .menu .primary-navigation {
+        position: absolute;
+        top: 88px;
+        right: 0%;
+        width: 100%;
+        background: {{ settings.bg }};
+        margin: 0;
+        padding-block: 48px;
+        list-style: none;
+        transition: clip-path ease-in-out 700ms;
+    }
+
+    .menu .primary-navigation[data-state="closed"] {
+        display: none;
+    }
+
+    .menu .primary-navigation[data-state="closing"] {
+        animation: clipPathCircleClose 750ms ease-in-out forwards;
+        display: block;
+    }
+
+    .menu .primary-navigation[data-state="opened"] {
+        animation: clipPathCircleOpen 750ms ease-in-out forwards;
+        display: block;
+    }
+
+    @keyframes clipPathCircleOpen {
+        0% {
+        clip-path: circle(0% at top right);
+        }
+        100% {
+        clip-path: circle(250% at top right);
+        }
+    }
+    @keyframes clipPathCircleClose {
+        0% {
+        clip-path: circle(250% at top right);
+        }
+        100% {
+        clip-path: circle(0% at top right);
+        }
+    }
+
+    .menu .primary-navigation li {
+        padding: 0 24px 32px;
+    }
+
+    .menu .primary-navigation li a {
+        text-decoration: none;
+        text-transform: uppercase;
+        color: {{ settings.link_color }};
+    }
+
+    .menu .primary-navigation li[data-state="closed"] {
+        display: none;
+    }
+
+    .menu .menuToggle {
+        display: block;
+        padding: 0.9em;
+        background: transparent;
+        border: 0;
+        // outline: 2px solid lime;
+        position: relative;
+        right: 0;
+        cursor: pointer;
+    }
+
+    .menu .menu_container li:hover,
+    .menu .menu_container li:focus {
+        text-decoration: underline;
+    }
+
+    .menu .menuHamburger {
+        background-color: {{ settings.bg }};
+        border-radius: 3px;
+        height: 4px;
+        position: absolute;
+        top: 12px;
+        right: 0;
+        transition: all 0.5s ease;
+        width: 29px;
+        cursor: pointer;
+    }
+
+    .menu .menuHamburger::before,
+    .menu .menuHamburger::after {
+        background: {{ settings.link_color }};
+        border-radius: 3px;
+        content: "";
+        height: 4px;
+        position: absolute;
+        transition: all 0.5s ease;
+        width: 29px;
+        right: 0;
+    }
+
+    .menu .menuHamburger::before {
+        transform: translateY(-6px);
+    }
+
+    .menu .menuHamburger::after {
+        transform: translateY(6px);
+    }
+
+    .menu .menuToggle[aria-expanded="true"] .menuHamburger::before {
+        transform: rotate(45deg) translate(35px, -35px);
+    }
+
+    .menu .menuToggle[aria-expanded="true"] .menuHamburger::after {
+        transform: rotate(-45deg) translate(35px, 35px);
+    }
+
+    .menu .menuToggle[aria-expanded="true"] .menuHamburger {
+        background: transparent;
+        transform: translateX(-50px);
+    }
+
+    .menu .visually-hidden {
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        white-space: nowrap;
+        width: 1px;
+    }
+}

@@ -1,0 +1,27 @@
+{% paginate search.results by 4 %}
+
+    {%  if search.performed and search.results_count > 0 %}
+        <h1>Here's your results</h1>
+
+        {% for result in search.results %}
+
+            {%- case result.object_type -%}
+                {%- when 'product' -%}
+                    <p><a href="{{ result.url }}">{{ result.title }}</a></p>
+
+                {%- when 'page' -%}
+                    <p><a href="{{ result.url }}">{{ result.title }}</a></p>
+
+                {%- when 'article' -%}
+                    <p><a href="{{ result.url }}">{{ result.title }}</a></p>
+
+            {%- endcase-%}
+
+        {% endfor %}
+        
+    {% else %}
+        <h1>Try searching for something</h1>
+    {% endif %}
+
+    {{ paginate | default_pagination }}
+{% endpaginate %}

@@ -1,0 +1,18 @@
+{
+  "current": {
+    "bg": "#2d1414",
+    "text_color": "#ededed",
+    "link_visited_color": "#D7EC39",
+    "show_search": false,
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "show_search": false,
+          "bg": "rgba(0,0,0,0)"
+        }
+      }
+    },
+    "content_for_index": []
+  }
+}

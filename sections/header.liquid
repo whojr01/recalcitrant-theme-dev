@@ -1,0 +1,64 @@
+{{ 'menu.css' | asset_url | stylesheet_tag }}
+
+<style>
+    .section-header {
+        width: var(--page-width);
+        min-width: var(--min-page-width);
+    }
+</style>
+
+<header class="header">
+
+    <nav class="menu">
+        <div class="logo">
+            <h1>{{ shop.name }}</h1>
+        </div>
+
+        <div>
+            <button class="menuToggle" aria-controls="primary-navigation" aria-expanded="false">
+                <span class="visually-hidden">Menu</span>
+                <div class="menuHamburger" aria-hidden="true"></div>
+            </button>
+
+
+            <ul class="primary-navigation" id="primary-navigation" data-state="closed">
+                <!-- Main menu -->
+                {% for link in linklists.main-menu.links -%}
+                    <li>{{ link.title | link_to: link.url }}</li>
+                {%- endfor %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="search_bar">
+        {% if section.settings.show_search %}
+            <form action="{{ routes.search_url }}">
+                <input type="text" name="q" placeholder="Search" value="{{ search.terms | escape }}">
+                <input type="submit" value="Search">
+            </form>
+        {% endif %}
+    </div>
+    
+</header>
+
+{{ 'menu.js' | asset_url | script_tag }}
+
+{% schema %}
+{
+    "name": "Header",
+    "class": "section-header",
+    "settings": [
+        {
+            "type": "checkbox",
+            "id": "show_search",
+            "label": "Show search form?",
+            "default": true
+        },
+        {
+            "type": "color",
+            "id": "bg",
+            "label": "Background color"
+        }
+    ]
+}
+{% endschema %}

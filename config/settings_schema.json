@@ -1,0 +1,42 @@
+[
+  {
+    "name": "colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "bg",
+        "label": "Background color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "link_color",
+        "label": "Link color",
+        "default": "#D7EC39"
+      },
+      {
+        "type": "color",
+        "id": "link_visited_color",
+        "label": "Visited Link color",
+        "default": "#D7EC39"
+      }
+    ]
+  },
+  {
+    "name": "settings",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_search",
+        "label": "Show search form?",
+        "default": true
+      }
+    ]
+  }
+]

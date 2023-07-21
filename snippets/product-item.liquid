@@ -1,0 +1,16 @@
+{% comment %}
+    usage: render 'product-item' product:product
+    product-item:
+        Displays the product image, product title and price
+    params:         type        Description
+        product     product     - The product to display
+{% endcomment %}
+
+<div>
+    <a href="{{ product.url }}">
+        <img src="{{ product.featured_image | image_url: width: 200 }}" alt="" />
+        <h3>{{ product.title }}</h3>
+        <p>{{ product.price | money }}</p>
+    </a>
+</div>
+  {{- product.title | link_to: product.url }}

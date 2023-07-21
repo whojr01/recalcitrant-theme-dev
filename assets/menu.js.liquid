@@ -1,0 +1,35 @@
+const MENU = {
+  init() {
+    console.log("Hello from menu");
+    MENU.addListeners();
+  },
+
+  addListeners() {
+    const menuToggle = document.querySelector(".menuToggle");
+    const primNav = document.querySelector(".primary-navigation");
+
+    menuToggle.addEventListener("click", () => {
+      menuToggle.getAttribute("aria-expanded") === "true" ? closeMenu() : openMenu();
+    });
+
+    function openMenu() {
+      menuToggle.setAttribute("aria-expanded", "true");
+      primNav.setAttribute("data-state", "opened");
+    }
+
+    function closeMenu() {
+      menuToggle.setAttribute("aria-expanded", "false");
+      primNav.setAttribute("data-state", "closing");
+
+      primNav.addEventListener(
+        "animationend",
+        () => {
+          primNav.setAttribute("data-state", "closed");
+        },
+        { once: true }
+      );
+    }
+  },
+};
+
+document.addEventListener("DOMContentLoaded", MENU.init);

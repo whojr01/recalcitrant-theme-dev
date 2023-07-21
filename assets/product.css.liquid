@@ -1,0 +1,38 @@
+.section-product {
+    width: var(--page-width);
+}
+
+.product {
+    display: flex;
+    margin: 2rem auto;
+    justify-content: center;
+    align-items: center;
+    outline: 1px solid white;
+}
+
+.product-image img {
+    display: block;
+    max-width: 100%;
+}
+
+.product-info {
+    padding: 2rem;
+}
+
+.product-info form {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-info h3,
+.product-info p {
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+@media only screen and (max-width: 740px) {
+    .product {
+        flex-wrap: wrap;
+    }
+}
+
