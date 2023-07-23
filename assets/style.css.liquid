@@ -35,6 +35,42 @@ body a:visited {
   touch-action: manipulation;
 }
 
+.button:disabled {
+  color: #787878;
+  cursor: auto;
+}
+
+.button:not(:disabled):hover {
+  transform: scale(1.05);
+}
+
+.button:not(:disabled):hover:active {
+  transform: scale(1.05) translateY(.125rem);
+}
+
+.button:focus {
+  outline: 0 solid transparent;
+}
+
+.button:focus:before {
+  border-width: .125rem;
+  content: "";
+  left: calc(-1*.375rem);
+  pointer-events: none;
+  position: absolute;
+  top: calc(-1*.375rem);
+  transition: border-radius;
+  user-select: none;
+}
+
+.button:focus:not(:focus-visible) {
+  outline: 0 solid transparent;
+}
+
+.button:not(:disabled):active {
+  transform: translateY(.125rem);
+}
+
 .primary-text {
   border-radius: .375rem;
   border-style: solid;
@@ -63,6 +99,18 @@ body a:visited {
 
 .mg-b-small {
     margin-bottom: .5rem;
+}
+
+.mg-l-small {
+  margin-left: .5rem;
+}
+
+.mg-l-1rem {
+  margin-left: 1rem;
+}
+
+.mg-b-1rem {
+  margin-bottom: 1rem;
 }
 
 .text-left {

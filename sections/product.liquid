@@ -2,27 +2,225 @@
 
 <div class="product">
     <div class="product-image">
-        <img src="{{ product.featured_image | image_url: width: 500 }}" alt="" />
+        {% if product.selected_or_first_available_variant.featured_image %}
+            {% assign featured = product.selected_or_first_available_variant.featured_image %}
+            <img id="product-featured-image" src="{{ featured | image_url }}" alt="">
+        {% else %}
+            {% assign featured = product.featured_image %}
+
+            <img id="product-featured-image" src="{{ featured | image_url }}" alt="">
+        {% endif %}
+
+        <ul class="product-image-thumbs">
+            {% for image in product.images %}
+                <li class="{% if image == featured %}selected{% endif %}"><img src="{{ image | image_url: width: 100 }}" alt="" /></li>
+            {% endfor %}
+        </ul>
     </div>
     
     <div class="product-info">
         <h3 class="product-title">{{ product.title }}</h3>
-        <p class="product-price">{{ product.price | money }}</p>
+
+        <div class="product-prices">
+            <p class="product-price">{{ product.selected_or_first_available_variant.price | money }}</p>
+            <p class="product-price-compare {% unless product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}hide{% endunless %}">{{ product.selected_or_first_available_variant.compare_at_price | money }}</p>
+        </div>
+
         <p class="product-description">{{ product.description }}</p>
     
         {% form 'product', product, id: 'product-form' %}
-            <select class="primary-text field-large mg-b-small" name="id">
-                {% for variant in product.variants %}
-                    <option value="{{ variant.id }}">
-                        {{ variant.title }}
-                    </option>
-                {% endfor %}
-            </select>
-            <input class="primary-text field-large mg-b-small" type="text" name="quantity" min="1" value="1">
-            <button type="submit" class="button primary-btn field-large text-center">{{ 'General.add_to_cart' | t }}</button>
+            <input id="product-variant-id" type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+            
+            {% if product.variants.size > 1 %}
+                <div class="product-options">
+                    {% comment %}
+                        The product.options_with_values outputs the
+                        variant categories: size, color, and buttons
+                    {% endcomment %}
+                    {% for option in product.options_with_values %}
+                        <fieldset>
+                                {% comment %}
+                                    This outputs the options under each category:
+                                        small, medium, large, and xl large
+                                {% endcomment %}
+                            <legend class="radio-label field-large text-center">{{ option.name }}</legend>
+                            <div class="radio-selections">
+                                {% for value in option.values %}
+                                    <div>
+                                            <input
+                                                {% if option.selected_value == value %}checked{% endif %}
+                                                type="radio"
+                                                name="{{ option.name }}"
+                                                value="{{ value }}"
+                                                id="{{ option.name | handlize }}-{{ value | handlize }}">
+                                        <label class="button radio-btn field-large text-center" for="{{ option.name | handlize }}-{{ value | handlize }}">{{ value }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </fieldset>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="inline">
+                <label class="radio-label field-large text-center mg-l-1rem" for="product-quanity">Quanity</label>
+            </div>
+
+            <div>
+                <div class="quanity-selector">
+                    <button type="button"  class="quanity-selector-minus">
+                        {% render 'icon-minus' %}
+                    </button>
+
+                    <input id="product-quanity" class="primary-text field-large mg-b-small" type="text" name="quantity" min="1" value="1">
+
+                    <button type="button"  class="quanity-selector-plus">
+                        {% render 'icon-plus' %}
+                    </button>
+                </div>
+            </div>
+
+            <button {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %} type="submit" id="product-add-to-cart" class="button primary-btn field-large text-center mg-b-small">
+                {% if product.selected_or_first_available_variant.available %}
+                    {{ 'General.add_to_cart' | t }}
+                {% else %}
+                    Out of Stock
+                {% endif %}
+            </button>
+
+            {% comment %} Buy it now button {% endcomment %}
+            
+            <button {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %} type="submit" id="product-buy-it-now" class="button primary-btn field-large text-center">
+                {% if product.selected_or_first_available_variant.available %}
+                    {{ 'General.buy_it_now' | t }}
+                {% else %}
+                    {{ 'General.out_of_stock' | t }}
+                {% endif %}
+            </button>
+
         {% endform%}
     </div>
 </div>
+
+<script>
+    const MYPRODUCT = {
+        init() {
+            var product = {{ product | json }}
+            // Add event listeners to all of the the radios
+
+            const radioButtons = document.querySelectorAll('.product-options input[type="radio"]');
+            for (var radio of radioButtons ) {
+                // When a radio button is clicked
+                radio.addEventListener('change', function () {
+                    // get all of the clicked catagory options
+                    var radioChecked = document.querySelectorAll('.product-options input[type="radio"]:checked');
+
+                    // Get all of the selected options
+                    var selectedOptions = [];
+                    for (var radio of radioChecked) {
+                        selectedOptions.push(radio.value);
+                    }
+
+                    // Now find the matched variant
+                    var matchedVariant = product.variants.find( variant => {
+                        var pass = true;
+                        for (var i = 0; i < selectedOptions.length; i++) {
+                            if (selectedOptions.indexOf(variant.options[i]) === -1) {
+                                pass = false;
+                                break;
+                            }
+                        }
+                        // if we make it here we found the variant
+                        return pass;
+                    });
+
+                    // Now change the product form variant ID.
+                    document.querySelector('#product-variant-id').value = matchedVariant.id;
+
+                    // Change the url so if you hit refresh you don't loose the options
+                    var url = new URLParse(window.location.href, true);
+                    url.query.variant = matchedVariant.id;
+                    window.history.replaceState(null, "", url.toString());
+
+                    // Change prices
+                    document.querySelector('.product-price').textContent = formatMoney(matchedVariant.price, "{{ shop.money_format }}");
+                    document.querySelector('.product-price-compare').textContent = formatMoney(matchedVariant.compare_at_price, "{{ shop.money_format }}");
+
+                    matchedVariant.compare_at_price > matchedVariant.price ?
+                        document.querySelector('.product-price-compare').classList.remove("hide") :
+                        document.querySelector('.product-price-compare').classList.add("hide");
+
+                    // Change image
+
+                    if (matchedVariant.featured_image) {
+                        document.querySelector("#product-featured-image").setAttribute("src", matchedVariant.featured_image.src);
+                        document.querySelector(".product-image-thumbs li.selected").classList.remove("selected");
+
+                        document.querySelectorAll(".product-image-thumbs li")[matchedVariant.featured_image.position - 1].classList.add("selected");
+                    }
+
+                    // Change button
+                    var add = document.querySelector("#product-add-to-cart");
+                    var buy = document.querySelector("#product-buy-it-now");
+                    if (matchedVariant.available) {
+                        add.textContent = "{{ 'General.add_to_cart' | t }}";
+                        add.disabled = false;
+                        buy.textContent = "{{ 'General.add_to_cart' | t }}";
+                        buy.disabled = false;
+                    } else {
+                        add.textContent = "{{ 'General.out_of_stock' | t }}";
+                        add.disabled = true;
+                        buy.textContent = "{{ 'General.out_of_stock' | t }}";
+                        buy.disabled = true;
+                    }
+
+                });
+            }
+
+            const productThumbs = document.querySelectorAll('.product-image-thumbs li');
+            for (thumb of productThumbs) {
+                thumb.addEventListener("click", (evt) => {
+                    document.querySelector(".product-image-thumbs li.selected").classList.remove("selected");
+                    evt.currentTarget.classList.add("selected");
+                    var evtSrc = evt.target.getAttribute("src").replace(/width=100/,"");
+                    document.querySelector("#product-featured-image").setAttribute("src", evtSrc);
+                });
+
+
+            }
+
+            document.querySelector("#product-buy-it-now").addEventListener("click", (e) => {
+                e.preventDefault();
+
+                var form = document.querySelector('.shopify-product-form');
+
+                // <input type="hidden" name="return_to" value="/checkout/">
+                var input = document.createElement('input');
+                input.value = "/checkout";
+                input.type = "hidden";
+                input.name = "return_to";
+                form.appendChild(input);
+                form.submit();
+            });
+
+            document.querySelector(".quanity-selector-plus").addEventListener("click", (e) => {
+                var currentValue = Number(document.querySelector("#product-quanity").value) + 1;
+                if (!isNaN(currentValue)) {
+                    document.querySelector("#product-quanity").value = currentValue;
+                }
+            });
+
+            document.querySelector(".quanity-selector-minus").addEventListener("click", (e) => {
+                var currentValue = Number(document.querySelector("#product-quanity").value) - 1;
+                if (!isNaN(currentValue) && currentValue > 0) {
+                    document.querySelector("#product-quanity").value = currentValue;
+                }
+            });
+        }
+    };
+    MYPRODUCT.init();
+</script>
 
 {% schema %}
 {
