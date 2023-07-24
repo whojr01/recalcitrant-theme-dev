@@ -39,7 +39,7 @@
 }
 
 .product-info label {
-    display: block;
+    {% comment %} display: block; {% endcomment %}
     margin-block: .5rem .5rem;
 }
 
@@ -92,15 +92,6 @@
     display: inline;
 }
 
-.product-info .radio-label {
-    display: inline;
-    border-radius: .375rem;
-    font-size: 1.125rem;
-    font-weight: 500;
-    line-height: 1.3;
-    background-color: {{ settings.link_color }};
-    color: {{ settings.bg }};
-}
 
 .product-info .radio-btn:last-child {
     margin-bottom: 1rem;

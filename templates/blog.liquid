@@ -14,5 +14,7 @@
         </div>
     {% endfor %}
 
-    {{ paginate | default_pagination }}
+    <div class="paginate-legend text-center">
+        {{ paginate | default_pagination }}
+    </div>
 {% endpaginate %}

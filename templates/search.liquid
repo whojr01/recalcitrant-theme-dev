@@ -23,5 +23,7 @@
         <h1>Try searching for something</h1>
     {% endif %}
 
-    {{ paginate | default_pagination }}
+    <div class="paginate-legend text-center">
+        {{ paginate | default_pagination }}
+    </div>
 {% endpaginate %}

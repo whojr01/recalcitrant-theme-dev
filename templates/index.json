@@ -1,0 +1,10 @@
+{
+  "sections": {
+    "collection": {
+      "type": "collection",
+      "blocks": {},
+      "settings": {}
+    }
+  },
+  "order": ["collection"]
+}

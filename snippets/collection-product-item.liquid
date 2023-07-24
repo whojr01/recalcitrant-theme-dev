@@ -6,11 +6,10 @@
         product     product     - The product to display
 {% endcomment %}
 
-<div>
+<div class="collection-item">
     <a href="{{ product.url }}">
-        <img src="{{ product.featured_image | image_url: width: 200 }}" alt="" />
+        <img src="{{ product.featured_image | image_url: master }}" alt="" />
         <h3>{{ product.title }}</h3>
         <p>{{ product.price | money }}</p>
     </a>
 </div>
-  {{- product.title | link_to: product.url }}
