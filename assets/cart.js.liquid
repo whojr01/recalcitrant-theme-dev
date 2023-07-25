@@ -1,0 +1,72 @@
+function updateItemQuantity (key, quantity) {
+    axios.post('/cart/change.js', {
+        id: key, quantity }
+    ).then((res) => {
+        const item = res.data.items.find( item => item.key === key);
+        const format = document.querySelector("[data-money-format]").dataset.moneyFormat;
+
+        document.querySelector("#total-discounts").textContent = formatMoney(res.data.total_discount, format);
+        document.querySelector("#total-price").textContent = formatMoney(res.data.total_price, format);
+        document.querySelector(`[data-key="${key}"] .cart-price`).textContent= formatMoney(item.final_line_price, format);
+    });
+}
+
+// Returns a function, that, as long as it continues to be invoked, will not
+// be triggered. The function will be called after it stops being called for
+// N milliseconds. If `immediate` is passed, trigger the function on the
+// leading edge, instead of the trailing.
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
+for (remove of document.querySelectorAll(".cart-remove")) {
+    remove.addEventListener("click", (e) => {
+        e.preventDefault();
+        
+        var item = e.currentTarget.closest(".cart-item");
+        var key = item.dataset.key;
+
+
+        axios.post("/cart/change.js", {
+            id: key,
+            quantity: 0,
+        }).then((res) => {
+            if (res.data.items.length === 0) {
+                document.querySelector("#cart_form").remove();
+                const cart_form = document.createElement('div');
+                cart_form.innerHTML = `
+                    <h1>Cart</h1>
+                    <div class="cart-empty text-center">
+                        <p>You have no items in your cart</p>
+                        <a href="/" class="button primary-btn field-large cart-empty">Keep shopping</a>
+                    </div>
+                `;
+                document.querySelector(".cart-container").appendChild(cart_form);
+            } else {
+                const format = document.querySelector("[data-money-format]").dataset.moneyFormat;
+
+                document.querySelector("#total-discounts").textContent = formatMoney(res.data.total_discount, format);
+                document.querySelector("#total-price").textContent = formatMoney(res.data.total_price, format);
+                item.remove();
+            }
+        });
+    });
+}
+
+document.querySelector("[name='note']").addEventListener("keyup", debounce((e) => {
+        axios.post("/cart/update.js", {
+            note: e.target.value,
+        });
+    }, 500)
+);

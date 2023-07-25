@@ -67,18 +67,8 @@
                 <label class="text-button-label field-large text-center" for="product-quanity">Quanity</label>
             </div>
 
-            <div>
-                <div class="quanity-selector">
-                    <button type="button"  class="quanity-selector-minus">
-                        {% render 'icon-minus' %}
-                    </button>
-
-                    <input id="product-quanity" class="primary-text field-large mg-b-small" type="text" name="quantity" min="1" value="1">
-
-                    <button type="button"  class="quanity-selector-plus">
-                        {% render 'icon-plus' %}
-                    </button>
-                </div>
+            <div class="quanity-selector">
+                {% render 'quantity-selector' id:"product-quantity" name:"quantity" quantity:1 %}
             </div>
 
             <button {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %} type="submit" id="product-add-to-cart" class="button primary-btn field-large text-center mg-b-small">
@@ -202,20 +192,6 @@
                 input.name = "return_to";
                 form.appendChild(input);
                 form.submit();
-            });
-
-            document.querySelector(".quanity-selector-plus").addEventListener("click", (e) => {
-                var currentValue = Number(document.querySelector("#product-quanity").value) + 1;
-                if (!isNaN(currentValue)) {
-                    document.querySelector("#product-quanity").value = currentValue;
-                }
-            });
-
-            document.querySelector(".quanity-selector-minus").addEventListener("click", (e) => {
-                var currentValue = Number(document.querySelector("#product-quanity").value) - 1;
-                if (!isNaN(currentValue) && currentValue > 0) {
-                    document.querySelector("#product-quanity").value = currentValue;
-                }
             });
         }
     };

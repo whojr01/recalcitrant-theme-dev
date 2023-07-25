@@ -101,17 +101,14 @@
             </div>
                 
             <div class="collection-results">
-                {% paginate collection.products by 4 %}
+               
                     <div class="collection-products">
                     {% for product in collection.products %}
                         {% render 'collection-product-item', product:product %}
                     {% endfor %}
                     </div>
 
-                    <div class="paginate-legend text-center">
-                        {{ paginate | default_pagination }}
-                    </div>
-                {% endpaginate %}
+            
             </div>
         </div>
 </div>

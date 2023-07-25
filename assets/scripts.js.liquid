@@ -47,3 +47,42 @@ var formatMoney = function(cents, format) {
 
   return formatString.replace(placeholderRegex, value);
 };
+
+//
+// Snippet quantity-Selector component controls
+
+for (plus of document.querySelectorAll(".quantity-selector-plus")) {
+  plus.addEventListener("click", (e) => {
+    var quantityId=`#${e.currentTarget.dataset.quantityId}`;
+    var onCartPage = e.currentTarget.closest(".cart-item");
+    var key;
+
+    var currentValue = Number(e.currentTarget.parentNode.querySelector(quantityId).value) + 1;
+    if (!isNaN(currentValue)) {
+        e.currentTarget.parentNode.querySelector(quantityId).value = currentValue;
+
+      if (onCartPage) {
+        key = onCartPage.dataset.key;
+        updateItemQuantity(key, currentValue);
+      }
+    }
+  });
+}
+
+for (minus of document.querySelectorAll(".quantity-selector-minus")) {
+    minus.addEventListener("click", (e) => {
+        var quantityId=`#${e.currentTarget.dataset.quantityId}`;
+        var onCartPage = e.currentTarget.closest(".cart-item");
+        var key;
+
+        var currentValue = Number(e.currentTarget.parentNode.querySelector(quantityId).value) - 1;
+        if (!isNaN(currentValue) && currentValue > 0) {
+            e.currentTarget.parentNode.querySelector(quantityId).value = currentValue;
+
+          if (onCartPage) {
+            key = onCartPage.dataset.key;
+            updateItemQuantity(key, currentValue);
+          }
+        }
+    });
+}

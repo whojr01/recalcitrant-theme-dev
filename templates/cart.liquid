@@ -1,21 +1,53 @@
-{% form 'cart', cart %}
-    <h1>Cart</h1>
+{{ 'cart.css' | asset_url | stylesheet_tag }}
+
+<div class="cart-container" data-money-format="{{ shop.money_format }}">
+    {% form 'cart', cart %}
+        <h1>Cart</h1>
     
-    {% if cart.empty? %}
-        <p>You have no items in your cart</p>
-    {% else %}
-        {% for item in cart.items %}
-            <div>
-                <img src="{{ item.image | image_url: width:200 }}" alt="">
-                <h2>{{ item.title }}</h2>
-                <p>{{ item.final_line_price | money }}</p>
-                <input name="updates[]" value="{{ item.quanity }}">
-                <a href="{{ item.url_to_remove }}">Remove</a>
+        {% if cart.empty? %}
+            <div class="cart-empty text-center">
+                <p>You have no items in your cart</p>
+                <a href="/" class="button primary-btn field-large cart-empty">Keep shopping</a>
             </div>
-        {% endfor %}
-        <hr>
-        <p>Total: {{ cart.total_price | money }}</p>
-        <button type="submit" name="update">Update Cart</button>
-        <button type="submit" name="checkout">Checkout</button>
-    {% endif %}
-{% endform %}
+        {% else %}
+            {% for item in cart.items %}
+                <div class="cart-item cart-border" data-key="{{ item.key }}">
+                    <div class="cart-image">
+                        <img src="{{ item.image | image_url: master }}" alt="">
+                    </div>
+
+                    <div class="cart-title">
+                        <h4>{{ item.title }}</h4>
+                    </div>
+                    
+                    <div class="cart-price">
+                        <p>{{ item.final_line_price | money }}</p>
+                    </div>
+                    
+                    <div class="cart-quantity">
+                        {% render 'quantity-selector' id:'cart-quantity' name:'updates[]' quantity:item.quantity %}
+                    </div>
+                    
+                    <div>
+                        <a class="cart-remove button primary-btn field-small cart-color" href="{{ item.url_to_remove }}">Remove</a>
+                    </div>
+                    <hr/>
+                </div>
+            {% endfor %}
+
+            <div class="cart-footer text-right">
+                <p>Discounts: <strong id="total-discounts">{{ cart.total_discounts | money }}</strong></p>
+                <p>Total: <strong id="total-price">{{ cart.total_price | money }}</strong></p>
+                <label for="cart-note">Note:</label>
+                <textarea id="cart-note" name="note" cols="25" rows="7" placeholder="Add additional notes here">{{ cart.note }}</textarea>
+
+                <button class="button primary-btn field-small" type="submit" name="checkout">Checkout</button>
+            </div>
+        {% endif %}
+    {% endform %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+{{ 'cart.js' | asset_url | script_tag }}
+
