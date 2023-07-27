@@ -1,0 +1,64 @@
+<div class="related-container">
+    <h2>{{ section.settings.heading }}</h2>
+
+    <div class="related-products" data-format-money="{{ shop.money_format }}">
+    </div>
+</div>
+
+{% if cart.item_count > 0 %}
+    {% assign relatedId = cart.items[0].product_id %}
+{% else %}
+    {% assign relatedId = "8504226382110" %}
+{% endif %}
+
+<script>
+    function buildBlock(product) {
+        const moneyFormat = document.querySelector(".related-products").dataset.formatMoney;
+
+        const html = `
+            <a class="related-product" href="${product.url}">
+                <img src="${product.images[0]}"/>
+                    <h3>${product.title}</h3>
+                    <span>${formatMoney(product.price,moneyFormat)}</span>
+
+                    <form method="post" action="/cart/add">
+                        <input name="id" type="hidden" value="${product.variants[0].id}"/>
+                        <button class="button primary-btn field-small mg-t-1rem" type="submit">Add to cart</button>
+                    </form>
+            </a>
+        `;
+
+        return html;
+    }
+
+    fetch(window.Shopify.routes.root + "recommendations/products.json?product_id={{ relatedId }}&limit=3")
+    .then(response => response.json())
+    .then(({ products }) => {
+        for (product of products) {
+            const html = buildBlock(product);
+            document.querySelector(".related-products").innerHTML += html;
+        }
+        console.log(products);
+    }
+    );
+
+</script>
+
+{% schema %}
+{
+    "name": "Related products",
+    "settings": [
+        {
+            "type": "text",
+            "label": "Heading",
+            "id": "heading",
+            "default": "You may also like"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Related products"
+        }
+    ]
+}
+{% endschema %}

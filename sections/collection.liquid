@@ -100,15 +100,15 @@
                 </form>
             </div>
                 
-            <div class="collection-results">
-               
+            <div class="collection-results paginate-legend">
+            {% paginate collection.products by 5 %}   
                     <div class="collection-products">
                     {% for product in collection.products %}
-                        {% render 'collection-product-item', product:product %}
+                        {% render 'collection-product-item', product:product imgwidth:400 %}
                     {% endfor %}
                     </div>
-
-            
+                    {{- paginate | default_pagination -}}
+                {% endpaginate%}
             </div>
         </div>
 </div>

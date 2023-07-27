@@ -1,11 +1,8 @@
 {
   "sections": {
-    "collection": {
-      "type": "collection",
-      "settings": {}
+    "related-products": {
+      "type": "related-products"
     }
   },
-  "order": [
-    "collection"
-  ]
+  "order": ["related-products"]
 }

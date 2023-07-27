@@ -151,6 +151,10 @@ input {
   line-height: 1rem;
 }
 
+/**
+ * Pagination legend
+*/
+
 .paginate-legend .page.current {
   margin-right: 1rem;
 }
@@ -169,6 +173,51 @@ input {
   color: {{ settings.link_color }};
 }
 
+/**
+ * Featured Products
+*/
+.related-container {
+  padding: 4rem 0;
+}
+
+.related-products {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.related-product {
+  flex: 1 0 280px;
+  margin: 5px;
+}
+
+.related-product img {
+  width: 100%;
+  margin-bottom: .5rem;
+}
+
+.related-product .related-info {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  align-items: center;
+}
+
+.related-product h3 {
+  font-size: 1.2rem;
+  color: {{ settings.link_color }};
+}
+
+.related-product span {
+  font-size: 1rem;
+  color: {{ settings.link_color }};
+}
+
+/**
+ * Utility Classes
+*/
+
 .mg-b-small {
     margin-bottom: .5rem;
 }
@@ -179,6 +228,10 @@ input {
 
 .mg-t-small {
   margin-top: .5rem;
+}
+
+.mg-t-1rem {
+  margin-top: 1rem;
 }
 
 .mg-l-small {

@@ -1,0 +1,28 @@
+{{ 'collection.css' | asset_url | stylesheet_tag }}
+
+<div class="container">
+    <h2>{{ collections['products'].title }}</h2>
+    
+        <div class="collection-results paginate-legend">
+            {% paginate collections['products'].products by 5 %}
+                <div class="collection-products">
+                    {% for product in collections['products'].products %}
+                        {% render 'collection-product-item' product:product imgwidth:400 %}
+                    {% endfor%}
+                </div>
+                {{- paginate | default_pagination -}}
+            {% endpaginate%}
+        </div>
+</div>
+
+{% schema %}
+{
+    "name": "Featured products",
+    "settings": [],
+    "presets": [
+        {
+            "name": "Featured products"
+        }
+    ]
+}
+{% endschema %}

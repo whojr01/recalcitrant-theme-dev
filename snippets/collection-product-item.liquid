@@ -4,11 +4,16 @@
         Displays the product image, product title and price
     params:         type        Description
         product     product     - The product to display
+        imgWidth       size        - The size to render 400 for 400px
 {% endcomment %}
+
+{% unless imgwidth != blank %}
+    {% assign imgwidth = "width:master" %}
+{% endunless %}
 
 <div class="collection-item">
     <a href="{{ product.url }}">
-        <img src="{{ product.featured_image | image_url: master }}" alt="" />
+        <img src="{{ product.featured_image | image_url: width: imgwidth }}" alt="" />
         <h3>{{ product.title }}</h3>
         <p>{{ product.price | money }}</p>
     </a>
